@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import Navbar from './Components/Navbar';
+import { Outlet } from 'react-router-dom';
+import { createContext, useEffect, useState } from 'react';
+
+export const UserContext = createContext(null);
+
+const LS_KEY = 'users';
 
 function App() {
+  const [users, setUsers] = useState(
+    JSON.parse(localStorage.getItem(LS_KEY)) || []
+  );
+
+  useEffect(() => {
+    localStorage.setItem(LS_KEY, JSON.stringify(users));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <UserContext.Provider value={{ users, setUsers }}>
+        <Outlet />
+      </UserContext.Provider>
+    </>
   );
 }
 
